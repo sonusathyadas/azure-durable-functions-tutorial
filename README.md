@@ -9,11 +9,11 @@ This tutorials demonstrates how to create a Azure Durable functions to create an
 In this tutorial we are using `Azure SQL database`, `SendGrid` and `Storage account Queue` services for the execution of the workflow.
 
 ### Prerequisites
-*) Azure Subscription
-*) .NET Core 3.1 SDK
-*) Visual Studio 2019 (Azure Development must be enabled during installation)
-*) Postman (REST api testing tool)
-*) SQL Server Management Studio 
+* Azure Subscription
+* .NET Core 3.1 SDK
+* Visual Studio 2019 (Azure Development must be enabled during installation)
+* Postman (REST api testing tool)
+* SQL Server Management Studio 
 
 ## Preparing the Azure Services
 ### Create and configure Azure SQL Database
