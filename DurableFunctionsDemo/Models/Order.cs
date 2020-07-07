@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DurableFunctionsDemo.Models
 {
-    [Table("Orders")]
+    
     public class Order
     {
         [JsonProperty("id")]        

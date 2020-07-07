@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Diagnostics.Contracts;
-using System.Net.Http;
-using System.Threading.Tasks;
 using DurableFunctionsDemo.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System;
+using System.Data.SqlClient;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DurableFunctionsDemo
 {
@@ -48,7 +45,6 @@ namespace DurableFunctionsDemo
         [FunctionName("OrderProcessorWorkflowFn")]
         public static async Task<string> RunOrchestrator([OrchestrationTrigger] IDurableOrchestrationContext context)
         {
-
             Order order = context.GetInput<Order>();
             var paymentCompleted = await context.CallActivityAsync<bool>("CheckPaymentStatus", order.Id);
             if (paymentCompleted)
@@ -63,7 +59,7 @@ namespace DurableFunctionsDemo
                 return $"Order is not completed. Cancellation mail sent to {order.Email}";
             }
         }
-               
+
         /// <summary>
         /// Check payment status of the order
         /// </summary>
@@ -78,10 +74,10 @@ namespace DurableFunctionsDemo
             {
                 connection.Open();
                 var sql = $"select PaymentStatus from Payments where OrderId={orderId}";
-                using(SqlCommand command = connection.CreateCommand())
+                using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = sql;
-                    object status= await command.ExecuteScalarAsync();
+                    object status = await command.ExecuteScalarAsync();
                     if (status != null)
                     {
                         string statusText = status.ToString();
@@ -104,9 +100,9 @@ namespace DurableFunctionsDemo
         /// <returns></returns>
         [FunctionName("SendOrderToVendorQueue")]
         [return: Queue("vendor-orders", Connection = "AzureWebJobsStorage")]
-        public static string SendOrderToVendorQueue([ActivityTrigger]Order order, ILogger log)
+        public static string SendOrderToVendorQueue([ActivityTrigger] Order order, ILogger log)
         {
-            return JsonConvert.SerializeObject(order);            
+            return JsonConvert.SerializeObject(order);
         }
 
         /// <summary>
@@ -121,18 +117,19 @@ namespace DurableFunctionsDemo
             try
             {
                 var authKey = Environment.GetEnvironmentVariable("sendgrid_key");
-                SendGridClient client = new SendGridClient(authKey);              
+                SendGridClient client = new SendGridClient(authKey);
 
                 var from = new EmailAddress("sonusathyadas@hotmail.com", "byteSTREAM Admin");
                 var subject = $"Your Order confirmed with order Id {order.Id}";
-                var to = new EmailAddress(order.Email, order.CustomerName);                
+                var to = new EmailAddress(order.Email, order.CustomerName);
                 var htmlContent = $"Hi {order.CustomerName},<br/>" +
                     $"Your order with Id {order.Id} for Rs {order.Amount}/- is confirmed by the seller. Your order will be " +
                     $"delivered on {order.DeliveryDate.ToShortDateString()}. ";
-                var message = MailHelper.CreateSingleEmail(from, to, subject,"", htmlContent);
+                var message = MailHelper.CreateSingleEmail(from, to, subject, "", htmlContent);
                 var response = await client.SendEmailAsync(message);
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 log.LogInformation(ex.Message);
                 return false;
