@@ -2,4 +2,4 @@
 
 ## Order Processing Workflow
 
-:::image type="content" source="images/workflow.png" alt-text="Order processing workflow":::
+![Order processing workflow](images/workflow.png "Order processing workflow")
