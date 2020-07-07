@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "DurableFunctionsDemo": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "sqldb_connection": "Data Source=HPENVY;Initial Catalog=SynDB;Integrated Security=True",
+        "sendgrid_key": "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"
+      }
+    }
+  }
+}
